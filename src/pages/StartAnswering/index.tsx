@@ -28,14 +28,13 @@ const ProblemList = () => {
 
   const startRef = useRef<number>(0);
 
-  const fetchMoreData = () => {
+  const fetchMoreData = (isReset = false) => {
     setTimeout(() => {
-      const currentStart = startRef.current;
-      const newStart = currentStart + pageSize;
-      const newItems = data.slice(newStart, newStart + pageSize);
-      setItems((prevItems) => [...prevItems, ...newItems]);
-      startRef.current = newStart;
-      setHasMore(newStart + pageSize < data.length); // Update hasMore
+      const currentStart = isReset ? 0 : startRef.current + pageSize;
+      const newItems = data.slice(currentStart, currentStart + pageSize);
+      setItems((prevItems) => isReset ? newItems : [...prevItems, ...newItems]);
+      startRef.current = currentStart;
+      setHasMore(currentStart + pageSize < data.length); // Update hasMore
     }, 800);
   };
 
@@ -54,7 +53,7 @@ const ProblemList = () => {
   const resetCurrentExam = () => {
     localStorage.removeItem(paper!);
     setItems([]);
-    fetchMoreData();
+    fetchMoreData(true); // Pass true to indicate reset
   };
 
   useEffect(() => {
@@ -66,7 +65,7 @@ const ProblemList = () => {
         const temp = JSON.parse(paperExam);
         const { currentQuestion } = temp;
         const currQuestionIndex = data.findIndex(
-          (r: { id: any; }) => r.id === currentQuestion,
+          (r: { id: any }) => r.id === currentQuestion,
         );
         if (currQuestionIndex !== -1) {
           const listItem = document.getElementById(currentQuestion);

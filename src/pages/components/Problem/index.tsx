@@ -130,7 +130,7 @@ const Problem: React.FC<ProblemProps> = (props) => {
     if (paperExam) {
       const temp = JSON.parse(paperExam);
       const { errorRecord } = temp;
-      if (errorRecord.includes(item.id)) {
+      if (errorRecord?.includes(item.id)) {
         const delIndex = errorRecord.findIndex((r) => r === item.id);
         if (delIndex !== -1) {
           errorRecord.splice(delIndex, 1);
